@@ -24,6 +24,12 @@ public interface Game {
     public Player getPlayer(String playerName);
 
     /**
+     * Gets the current game board.
+     * @return An object representing the current game board.
+     */
+    public Board getBoard();
+
+    /**
      * Rolls two dice and move the player. Does not handle special effects.
      * @param playerName The name of the player to move.
      * @return The slot the player lands on.
@@ -38,6 +44,12 @@ public interface Game {
      * @return The slot the player lands on.
      * @throws IllegalArgumentException when the die value is out of range.
      */
-    public Slot movePlayer(String playerName, int die1, int die2) throws IllegalArgumentException ;
+    public Slot movePlayer(String playerName, int die1, int die2) throws IllegalArgumentException;
+
+    /**
+     * Check if any winning condition is met.
+     * @return true if the game is over, false if ongoing.
+     */
+    public boolean isGameOver();
 
 }

@@ -1,9 +1,5 @@
 package com.zampa.goosegame.gamelogic;
 
-enum SlotType {
-    START, BASE, BRIDGE, GOOSE, FINAL
-}
-
 public class Board {
 
     private final int NUMBER_OF_SLOTS = 64;

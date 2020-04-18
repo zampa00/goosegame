@@ -1,9 +1,6 @@
 package com.zampa.goosegame;
 
-import com.zampa.goosegame.gamelogic.Board;
-import com.zampa.goosegame.gamelogic.Game;
-import com.zampa.goosegame.gamelogic.Player;
-import com.zampa.goosegame.gamelogic.Slot;
+import com.zampa.goosegame.gamelogic.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +9,7 @@ public class GooseGame implements Game {
 
     private Map<String, Player> players;
     private Board board;
+    private boolean isGameOver;
     private final int MIN_DIE_VALUE = 1;
     private final int MAX_DIE_VALUE = 6;
 
@@ -19,6 +17,7 @@ public class GooseGame implements Game {
     public GooseGame() {
         players = new HashMap<>();
         board = new Board();
+        isGameOver = false;
     }
 
     @Override
@@ -68,7 +67,19 @@ public class GooseGame implements Game {
 
         player.setCurrentSlot(newSlot);
 
+        if(newSlot.getType() == SlotType.FINAL) {
+            this.isGameOver = true;
+        }
+
         return newSlot;
     }
 
+    @Override
+    public boolean isGameOver() {
+        return this.isGameOver;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
 }

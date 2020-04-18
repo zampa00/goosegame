@@ -39,4 +39,17 @@ public class TestGame {
         Assert.assertEquals("Second Pippo's movement failed", newPippoSlot2.getNumber(), 11);
     }
 
+    @Test
+    public void testGameEnd() {
+        Game gooseGame = new GooseGame();
+        gooseGame.addPlayer("Pippo");
+
+        Slot newSlot = gooseGame.getBoard().getSlot(60);
+        gooseGame.getPlayer("Pippo").setCurrentSlot(newSlot);
+
+        gooseGame.movePlayer("Pippo", 1, 2);
+
+        Assert.assertTrue("Winning condition check failed", gooseGame.isGameOver());
+    }
+
 }
