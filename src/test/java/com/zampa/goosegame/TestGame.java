@@ -1,6 +1,7 @@
 package com.zampa.goosegame;
 
 import com.zampa.goosegame.gamelogic.Game;
+import com.zampa.goosegame.gamelogic.Slot;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,5 +23,20 @@ public class TestGame {
         Assert.assertFalse("Player added twice", addPlayerTwiceResult);
     }
 
+    @Test
+    public void testMovePlayer() {
+        Game gooseGame = new GooseGame();
+        gooseGame.addPlayer("Pippo");
+        gooseGame.addPlayer("Pluto");
+
+        Slot newPippoSlot = gooseGame.movePlayer("Pippo", 4, 2);
+        Assert.assertEquals("First Pippo's movement failed", newPippoSlot.getNumber(), 6);
+
+        Slot newPlutoSlot = gooseGame.movePlayer("Pluto", 2, 2);
+        Assert.assertEquals("First Pluto's movement failed", newPlutoSlot.getNumber(), 4);
+
+        Slot newPippoSlot2 = gooseGame.movePlayer("Pippo", 3, 2);
+        Assert.assertEquals("Second Pippo's movement failed", newPippoSlot2.getNumber(), 11);
+    }
 
 }

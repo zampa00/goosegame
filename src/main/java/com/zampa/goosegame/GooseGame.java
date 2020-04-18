@@ -3,16 +3,17 @@ package com.zampa.goosegame;
 import com.zampa.goosegame.gamelogic.Board;
 import com.zampa.goosegame.gamelogic.Game;
 import com.zampa.goosegame.gamelogic.Player;
+import com.zampa.goosegame.gamelogic.Slot;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class GooseGame implements Game {
 
-
-
     private Map<String, Player> players;
     private Board board;
+    private final int MIN_DIE_VALUE = 1;
+    private final int MAX_DIE_VALUE = 6;
 
 
     public GooseGame() {
@@ -23,6 +24,7 @@ public class GooseGame implements Game {
     @Override
     public boolean addPlayer(String playerName) {
         Player newPlayer = new Player(playerName);
+        newPlayer.setCurrentSlot(board.getSlot(0));
 
         if (!hasPlayer(playerName)) {
             players.put(playerName, newPlayer);
@@ -42,4 +44,31 @@ public class GooseGame implements Game {
     public Player getPlayer(String playerName) {
         return players.get(playerName);
     }
+
+    @Override
+    public Slot movePlayer(String playerName) {
+        return null;
+    }
+
+    @Override
+    public Slot movePlayer(String playerName, int die1, int die2) throws IllegalArgumentException {
+        if (die1 < MIN_DIE_VALUE
+                || die1 > MAX_DIE_VALUE
+                || die2 < MIN_DIE_VALUE
+                || die2 > MAX_DIE_VALUE) {
+            throw new IllegalArgumentException();
+        }
+
+        System.out.println("Moving player "+playerName);
+        Player player = getPlayer(playerName);
+        System.out.println("Retrieved player "+player.getName());
+        Slot currentSlot = player.getCurrentSlot();
+        System.out.println("Current slot: " + currentSlot.getNumber());
+        Slot newSlot = board.advanceFromSlot(currentSlot, die1+die2);
+
+        player.setCurrentSlot(newSlot);
+
+        return newSlot;
+    }
+
 }
