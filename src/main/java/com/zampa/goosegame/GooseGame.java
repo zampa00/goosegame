@@ -1,5 +1,6 @@
 package com.zampa.goosegame;
 
+import com.zampa.goosegame.gamelogic.Board;
 import com.zampa.goosegame.gamelogic.Game;
 import com.zampa.goosegame.gamelogic.Player;
 
@@ -8,11 +9,15 @@ import java.util.Map;
 
 public class GooseGame implements Game {
 
+
+
     private Map<String, Player> players;
+    private Board board;
 
 
     public GooseGame() {
         players = new HashMap<>();
+        board = new Board();
     }
 
     @Override
