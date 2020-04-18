@@ -32,4 +32,9 @@ public class GooseGame implements Game {
     public boolean hasPlayer(String playerName) {
         return players.containsKey(playerName);
     }
+
+    @Override
+    public Player getPlayer(String playerName) {
+        return players.get(playerName);
+    }
 }
