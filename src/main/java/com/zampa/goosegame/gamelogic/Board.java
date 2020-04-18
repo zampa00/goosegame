@@ -43,7 +43,18 @@ public class Board {
      * @param by
      * @return
      */
-    public Slot advanceFromSlot(Slot from, int by) throws IndexOutOfBoundsException{
-        return slots[from.getNumber() + by];
+    public Slot advanceFromSlot(Slot from, int by) throws IndexOutOfBoundsException {
+        if (willBounce(from, by)) {
+            int overshoot = from.getNumber() + by - NUMBER_OF_SLOTS + 1; // 60 + 5 - 64 + 1 = 2
+            return slots[NUMBER_OF_SLOTS - overshoot - 1]; // 64 - 2 - 1 = 61
+        }
+        else {
+            return slots[from.getNumber() + by];
+        }
     }
+
+    public boolean willBounce(Slot from, int by) {
+        return from.getNumber() + by >= NUMBER_OF_SLOTS;
+    }
+
 }

@@ -52,4 +52,15 @@ public class TestGame {
         Assert.assertTrue("Winning condition check failed", gooseGame.isGameOver());
     }
 
+    @Test
+    public void testBounce() {
+        Game gooseGame = new GooseGame();
+        gooseGame.addPlayer("Pippo");
+
+        Slot newSlot = gooseGame.getBoard().getSlot(60);
+        gooseGame.getPlayer("Pippo").setCurrentSlot(newSlot);
+
+        Slot newPippoSlot = gooseGame.movePlayer("Pippo", 3, 2);
+        Assert.assertEquals("Bounce failed", newPippoSlot.getNumber(), 61);
+    }
 }
