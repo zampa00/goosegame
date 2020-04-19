@@ -46,15 +46,15 @@ public class GooseGame implements Game {
     }
 
     @Override
-    public Slot movePlayer(String playerName) {
+    public Slot rollPlayer(String playerName) {
         int die1 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
         int die2 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
 
-        return movePlayer(playerName, die1, die2);
+        return movePlayerOf(playerName, die1, die2);
     }
 
     @Override
-    public Slot movePlayer(String playerName, int die1, int die2) throws IllegalArgumentException {
+    public Slot movePlayerOf(String playerName, int die1, int die2) throws IllegalArgumentException {
         if (die1 < MIN_DIE_VALUE
                 || die1 > MAX_DIE_VALUE
                 || die2 < MIN_DIE_VALUE
@@ -62,20 +62,34 @@ public class GooseGame implements Game {
             throw new IllegalArgumentException();
         }
 
-        System.out.println("Moving player "+playerName);
         Player player = getPlayer(playerName);
-        System.out.println("Retrieved player "+player.getName());
         Slot currentSlot = player.getCurrentSlot();
-        System.out.println("Current slot: " + currentSlot.getNumber());
+        if (board.willBounce(currentSlot, die1+die2)) {
+
+        }
         Slot newSlot = board.advanceFromSlot(currentSlot, die1+die2);
 
         player.setCurrentSlot(newSlot);
 
-        if(newSlot.getType() == SlotType.FINAL) {
-            this.isGameOver = true;
+        switch (newSlot.getType()) {
+            case BRIDGE:
+                movePlayerTo(playerName, board.getSlot(12)); break;
+            case GOOSE:
+                movePlayerOf(playerName, die1, die2);
+            case FINAL:
+                this.isGameOver = true; break;
+            default:
+
         }
 
         return newSlot;
+    }
+
+    @Override
+    public Slot movePlayerTo(String playerName, Slot destination) {
+        Player player = getPlayer(playerName);
+        player.setCurrentSlot(destination);
+        return destination;
     }
 
     @Override

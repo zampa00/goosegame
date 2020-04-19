@@ -29,13 +29,13 @@ public class TestGame {
         gooseGame.addPlayer("Pippo");
         gooseGame.addPlayer("Pluto");
 
-        Slot newPippoSlot = gooseGame.movePlayer("Pippo", 4, 2);
+        Slot newPippoSlot = gooseGame.movePlayerOf("Pippo", 4, 2);
         Assert.assertEquals("First Pippo's movement failed", newPippoSlot.getNumber(), 6);
 
-        Slot newPlutoSlot = gooseGame.movePlayer("Pluto", 2, 2);
+        Slot newPlutoSlot = gooseGame.movePlayerOf("Pluto", 2, 2);
         Assert.assertEquals("First Pluto's movement failed", newPlutoSlot.getNumber(), 4);
 
-        Slot newPippoSlot2 = gooseGame.movePlayer("Pippo", 3, 2);
+        Slot newPippoSlot2 = gooseGame.movePlayerOf("Pippo", 3, 2);
         Assert.assertEquals("Second Pippo's movement failed", newPippoSlot2.getNumber(), 11);
     }
 
@@ -47,7 +47,7 @@ public class TestGame {
         Slot newSlot = gooseGame.getBoard().getSlot(60);
         gooseGame.getPlayer("Pippo").setCurrentSlot(newSlot);
 
-        gooseGame.movePlayer("Pippo", 1, 2);
+        gooseGame.movePlayerOf("Pippo", 1, 2);
 
         Assert.assertTrue("Winning condition check failed", gooseGame.isGameOver());
     }
@@ -58,9 +58,9 @@ public class TestGame {
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(60);
-        gooseGame.getPlayer("Pippo").setCurrentSlot(newSlot);
+        gooseGame.movePlayerTo("Pippo", newSlot);
 
-        Slot newPippoSlot = gooseGame.movePlayer("Pippo", 3, 2);
+        Slot newPippoSlot = gooseGame.movePlayerOf("Pippo", 3, 2);
         Assert.assertEquals("Bounce failed", newPippoSlot.getNumber(), 61);
     }
 
@@ -69,7 +69,7 @@ public class TestGame {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
-        Slot newPippoSlot = gooseGame.movePlayer("Pippo");
+        Slot newPippoSlot = gooseGame.rollPlayer("Pippo");
         Assert.assertNotEquals("First Pippo's automatic movement failed", newPippoSlot.getNumber(), 0);
     }
 }

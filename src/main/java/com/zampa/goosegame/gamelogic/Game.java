@@ -30,21 +30,29 @@ public interface Game {
     public Board getBoard();
 
     /**
-     * Rolls two dice and move the player. Does not handle special effects.
+     * Rolls two dice and move the player. Does handle special effects.
      * @param playerName The name of the player to move.
      * @return The slot the player lands on.
      */
-    public Slot movePlayer(String playerName);
+    public Slot rollPlayer(String playerName);
 
     /**
-     * Move the player of the specified dice numbers. Does not handle special effects.
+     * Move the player of the specified dice numbers. Does handle special effects.
      * @param playerName The name of the player to move.
      * @param die1 A valid die value.
      * @param die2 A valid die value.
      * @return The slot the player lands on.
      * @throws IllegalArgumentException when the die value is out of range.
      */
-    public Slot movePlayer(String playerName, int die1, int die2) throws IllegalArgumentException;
+    public Slot movePlayerOf(String playerName, int die1, int die2) throws IllegalArgumentException;
+
+    /**
+     * Move the player to the specified slot. Does NOT handle special effects.
+     * @param playerName The name of the player to move.
+     * @param destination The destination slot. Ignores any special effect.
+     * @return The slot the player lands on.
+     */
+    public Slot movePlayerTo(String playerName, Slot destination);
 
     /**
      * Check if any winning condition is met.
