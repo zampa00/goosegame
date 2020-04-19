@@ -4,6 +4,7 @@ import com.zampa.goosegame.gamelogic.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GooseGame implements Game {
 
@@ -46,7 +47,10 @@ public class GooseGame implements Game {
 
     @Override
     public Slot movePlayer(String playerName) {
-        return null;
+        int die1 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
+        int die2 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
+
+        return movePlayer(playerName, die1, die2);
     }
 
     @Override

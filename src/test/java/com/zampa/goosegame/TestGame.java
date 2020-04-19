@@ -63,4 +63,13 @@ public class TestGame {
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 3, 2);
         Assert.assertEquals("Bounce failed", newPippoSlot.getNumber(), 61);
     }
+
+    @Test
+    public void testRollAndMove() {
+        Game gooseGame = new GooseGame();
+        gooseGame.addPlayer("Pippo");
+
+        Slot newPippoSlot = gooseGame.movePlayer("Pippo");
+        Assert.assertNotEquals("First Pippo's automatic movement failed", newPippoSlot.getNumber(), 0);
+    }
 }
