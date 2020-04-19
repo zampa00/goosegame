@@ -73,9 +73,9 @@ public class GooseGame implements Game {
 
         switch (newSlot.getType()) {
             case BRIDGE:
-                movePlayerTo(playerName, board.getSlot(12)); break;
+                newSlot = movePlayerTo(playerName, board.getSlot(12)); break;
             case GOOSE:
-                movePlayerOf(playerName, die1, die2);
+                newSlot = movePlayerOf(playerName, die1, die2);
             case FINAL:
                 this.isGameOver = true; break;
             default:

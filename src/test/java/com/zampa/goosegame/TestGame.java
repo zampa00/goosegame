@@ -29,14 +29,14 @@ public class TestGame {
         gooseGame.addPlayer("Pippo");
         gooseGame.addPlayer("Pluto");
 
-        Slot newPippoSlot = gooseGame.movePlayerOf("Pippo", 4, 2);
-        Assert.assertEquals("First Pippo's movement failed", newPippoSlot.getNumber(), 6);
+        Slot newPippoSlot = gooseGame.movePlayerOf("Pippo", 1, 2);
+        Assert.assertEquals("First Pippo's movement failed", newPippoSlot.getNumber(), 3);
 
         Slot newPlutoSlot = gooseGame.movePlayerOf("Pluto", 2, 2);
         Assert.assertEquals("First Pluto's movement failed", newPlutoSlot.getNumber(), 4);
 
-        Slot newPippoSlot2 = gooseGame.movePlayerOf("Pippo", 3, 2);
-        Assert.assertEquals("Second Pippo's movement failed", newPippoSlot2.getNumber(), 11);
+        Slot newPippoSlot2 = gooseGame.movePlayerOf("Pippo", 3, 4);
+        Assert.assertEquals("Second Pippo's movement failed", newPippoSlot2.getNumber(), 10);
     }
 
     @Test
@@ -71,5 +71,17 @@ public class TestGame {
 
         Slot newPippoSlot = gooseGame.rollPlayer("Pippo");
         Assert.assertNotEquals("First Pippo's automatic movement failed", newPippoSlot.getNumber(), 0);
+    }
+
+    @Test
+    public void testBridge() {
+        Game gooseGame = new GooseGame();
+        gooseGame.addPlayer("Pippo");
+
+        Slot newSlot = gooseGame.getBoard().getSlot(4);
+        gooseGame.movePlayerTo("Pippo", newSlot);
+
+        Slot newPippoSlot = gooseGame.movePlayerOf("Pippo", 1, 1);
+        Assert.assertEquals("The Bridge not working", newPippoSlot.getNumber(), 12);
     }
 }
