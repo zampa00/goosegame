@@ -1,5 +1,7 @@
 package com.zampa.goosegame.gamelogic;
 
+import java.util.Optional;
+
 public interface Game {
 
     /**
@@ -53,6 +55,13 @@ public interface Game {
      * @return The slot the player lands on.
      */
     public Slot movePlayerTo(String playerName, Slot destination);
+
+    /**
+     * Returns the player on the specified slot.
+     * @param slotNum A number between 1 and 63
+     * @return An Optional containing the player on the specified slot, or nothing if empty.
+     */
+    public Optional<Player> getPlayerOnSlot(int slotNum);
 
     /**
      * Check if any winning condition is met.

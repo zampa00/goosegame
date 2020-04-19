@@ -4,6 +4,7 @@ import com.zampa.goosegame.gamelogic.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GooseGame implements Game {
@@ -64,18 +65,25 @@ public class GooseGame implements Game {
 
         Player player = getPlayer(playerName);
         Slot currentSlot = player.getCurrentSlot();
+
         if (board.willBounce(currentSlot, die1+die2)) {
 
         }
+
         Slot newSlot = board.advanceFromSlot(currentSlot, die1+die2);
 
-        player.setCurrentSlot(newSlot);
+        if (getPlayerOnSlot(newSlot.getNumber()).isPresent()) {
+            prank(player, newSlot);
+        }
+        else {
+            player.setCurrentSlot(newSlot);
+        }
 
         switch (newSlot.getType()) {
             case BRIDGE:
                 newSlot = movePlayerTo(playerName, board.getSlot(12)); break;
             case GOOSE:
-                newSlot = movePlayerOf(playerName, die1, die2);
+                newSlot = movePlayerOf(playerName, die1, die2); break;
             case FINAL:
                 this.isGameOver = true; break;
             default:
@@ -90,6 +98,27 @@ public class GooseGame implements Game {
         Player player = getPlayer(playerName);
         player.setCurrentSlot(destination);
         return destination;
+    }
+
+    @Override
+    public Optional<Player> getPlayerOnSlot(int slotNum) {
+        return players.values().stream()
+                .filter(player -> player.getCurrentSlot().getNumber() == slotNum)
+                .findFirst();
+    }
+
+    // Prank: if another player is on the destination slot, they switch
+    private void prank(Player newPlayer, Slot destination) {
+        System.out.println("Prank!");
+        getPlayerOnSlot(destination.getNumber())
+                .ifPresent(
+                        oldPlayer -> switchPlayers(newPlayer, oldPlayer)
+                );
+    }
+
+    private void switchPlayers(Player newPlayer, Player oldPlayer) {
+        newPlayer.setCurrentSlot(oldPlayer.getCurrentSlot());
+        oldPlayer.setCurrentSlot(newPlayer.getPreviousSlot());
     }
 
     @Override
