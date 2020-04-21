@@ -58,10 +58,11 @@ public interface Game {
 
     /**
      * Returns the player on the specified slot.
+     * @param newPlayer The player who just arrived on this slot
      * @param slotNum A number between 1 and 63
      * @return An Optional containing the player on the specified slot, or nothing if empty.
      */
-    public Optional<Player> getPlayerOnSlot(int slotNum);
+    public Optional<Player> getOtherPlayerOnSlot(Player newPlayer, int slotNum);
 
     /**
      * Check if any winning condition is met.

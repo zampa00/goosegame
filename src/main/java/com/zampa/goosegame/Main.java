@@ -1,25 +1,37 @@
 package com.zampa.goosegame;
 
 import com.zampa.goosegame.gamelogic.Game;
-import com.zampa.goosegame.gamelogic.Slot;
+import com.zampa.goosegame.io.CLInput;
+
+import java.io.*;
 
 public class Main {
 
     public static void  main(String[] args) {
         Game gooseGame = new GooseGame();
-        gooseGame.addPlayer("Pippo");
-        gooseGame.addPlayer("Pluto");
+        /*
+        leggo input
+        lo passo a qualcosa che lo esegue, ottenendo in output una lista di azioni
+        passo la lista di azioni a un output
 
-        Slot newPippoSlot = gooseGame.movePlayerOf("Pippo", 1, 2);
-        System.out.println(newPippoSlot.getNumber());
+         */
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        Slot newPlutoSlot = gooseGame.movePlayerOf("Pluto", 2, 2);
-        System.out.println(newPlutoSlot.getNumber());
+        CLInput cli = new CLInput(gooseGame);
 
-        System.out.println(gooseGame.getPlayer("Pippo").getCurrentSlot().getNumber());
+        try {
 
-        Slot newPippoSlot2 = gooseGame.movePlayerOf("Pippo", 3, 4);
-        System.out.println(newPippoSlot2.getNumber());
+
+            String input = reader.readLine();
+            cli.parse(input);
+
+
+            writer.write("Writing input: "+input+" on stdout\n");
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

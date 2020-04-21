@@ -16,7 +16,7 @@ public class Slot {
             case BRIDGE:
                 this.name = "The Bridge"; break;
             case GOOSE:
-                this.name = "The Goose"; break;
+                this.name = number + ", The Goose"; break;
             case BASE:
             case FINAL:
                 this.name = "";

@@ -71,13 +71,12 @@ public class GooseGame implements Game {
         }
 
         Slot newSlot = board.advanceFromSlot(currentSlot, die1+die2);
-
-        if (getPlayerOnSlot(newSlot.getNumber()).isPresent()) {
-            prank(player, newSlot);
-        }
-        else {
-            player.setCurrentSlot(newSlot);
-        }
+        
+        player.setCurrentSlot(newSlot);
+        getOtherPlayerOnSlot(player, newSlot.getNumber())
+                .ifPresent(
+                        oldPlayer -> switchPlayers(player, oldPlayer)
+                );
 
         switch (newSlot.getType()) {
             case BRIDGE:
@@ -101,24 +100,16 @@ public class GooseGame implements Game {
     }
 
     @Override
-    public Optional<Player> getPlayerOnSlot(int slotNum) {
+    public Optional<Player> getOtherPlayerOnSlot(Player newPlayer, int slotNum) {
         return players.values().stream()
                 .filter(player -> player.getCurrentSlot().getNumber() == slotNum)
+                .filter(player -> !player.equals(newPlayer))
                 .findFirst();
     }
 
-    // Prank: if another player is on the destination slot, they switch
-    private void prank(Player newPlayer, Slot destination) {
-        System.out.println("Prank!");
-        getPlayerOnSlot(destination.getNumber())
-                .ifPresent(
-                        oldPlayer -> switchPlayers(newPlayer, oldPlayer)
-                );
-    }
-
     private void switchPlayers(Player newPlayer, Player oldPlayer) {
-        newPlayer.setCurrentSlot(oldPlayer.getCurrentSlot());
         oldPlayer.setCurrentSlot(newPlayer.getPreviousSlot());
+        newPlayer.setCurrentSlot(oldPlayer.getCurrentSlot());
     }
 
     @Override
