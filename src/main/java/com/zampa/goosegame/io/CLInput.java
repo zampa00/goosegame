@@ -1,8 +1,11 @@
 package com.zampa.goosegame.io;
 
 import com.zampa.goosegame.gamelogic.Game;
+import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
+import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CLInput {
@@ -14,62 +17,49 @@ public class CLInput {
     }
 
     public void parse(String input) {
-        String[] i = input.split("[\\s]+");
+        String[] i = input.split("[\\s,]+");
+        System.out.println(input);
+        Command command = new Command((input));
 
         try {
-            switch(i[0]) {
+            switch(command.getName()) {
                 case "add":
                     parseAdd(i); break;
                 case "move":
-                    if(validateMove(input)) parseMove(i); break;
+                    handleMove(input, command.getParameters()); break;
                 default:
                     CLOutputLogger.commandNotFound(input);
             }
         }
         catch (IllegalArgumentException e) {
+            e.printStackTrace();
             CLOutputLogger.commandNotFound(input);
         }
 
-
     }
 
-    public boolean validateMove(String originalCommand) {
-        String[] input = originalCommand.split("[\\s]+");
+    private void handleMove(String originalCommand, List<String> parameters) {
 
-        if (input.length != 2 && input.length != 4) {
-            CLOutputLogger.commandNotFound(originalCommand);
-            return false;
-        }
-
-        // input[1] must be a valid player
-        if (!game.hasPlayer(input[1])) {
-            CLOutputLogger.playerNotFound(input[1]);
-            return false;
-        }
-
-        if (input.length == 4) {
-            // input[2] must be a valid number followed by a comma
-            if (!input[2].endsWith(",")) {
-                CLOutputLogger.commandNotFound(originalCommand);
-                return false;
-            }
-
-            // input[2] and input[3] must be valid numbers
-            for (int i = 2; i < 4; i++) {
-                try {
-                    int die = Integer.parseInt(input[i].replace(",", ""));
-                    if (!game.isDieValid(die)) {
-                        CLOutputLogger.invalidDie(die);
-                        return false;
-                    }
-                } catch (NumberFormatException e) {
-                    CLOutputLogger.invalidNumber(input[i]);
-                    return false;
-                }
+        try {
+            switch (parameters.size()) {
+                case 1:
+                    game.movePlayer(parameters.get(0)); break;
+                case 3:
+                    game.movePlayer(parameters.get(0), parameters.get(1), parameters.get(2)); break;
+                default:
+                    CLOutputLogger.commandNotFound(originalCommand);
             }
         }
+        catch (PlayerNotFoundException e) {
+            CLOutputLogger.playerNotFound(e.getMessage());
+        }
+        catch (InvalidDiceException e) {
+            CLOutputLogger.invalidDie(e.getMessage());
+        }
+        catch (NumberFormatException e) {
+            CLOutputLogger.invalidNumber(e.getMessage());
+        }
 
-        return true;
     }
 
 
@@ -82,19 +72,6 @@ public class CLInput {
         game.addPlayer(addInput[1]);
     }
 
-    private void parseMove(String[] moveInput) throws IllegalArgumentException {
-
-        switch (moveInput.length) {
-            case 2:
-                game.movePlayer(moveInput[1]); break;
-            case 4:
-                game.movePlayer(moveInput[1],
-                    Integer.parseInt(moveInput[2]),
-                    Integer.parseInt(moveInput[3])); break;
-            default:
-                CLOutputLogger.commandNotFound(Arrays.stream(moveInput).collect(Collectors.joining(" ")));
-        }
-    }
 
 
 

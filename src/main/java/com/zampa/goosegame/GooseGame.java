@@ -1,6 +1,8 @@
 package com.zampa.goosegame;
 
 import com.zampa.goosegame.gamelogic.*;
+import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
+import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
 import com.zampa.goosegame.io.CLOutputLogger;
 
 import java.util.*;
@@ -22,7 +24,7 @@ public class GooseGame implements Game {
     }
 
     @Override
-    public void addPlayer(String playerName) {
+    public boolean addPlayer(String playerName) {
         Player newPlayer = new Player(playerName);
         newPlayer.setCurrentSlot(board.getSlot(0));
 
@@ -31,9 +33,11 @@ public class GooseGame implements Game {
 
             String playerList = String.join(", ", players.keySet());
             CLOutputLogger.listPlayers(playerList);
+            return true;
         }
         else {
             CLOutputLogger.playerExists(playerName);
+            return false;
         }
     }
 
@@ -43,8 +47,12 @@ public class GooseGame implements Game {
     }
 
     @Override
-    public Player getPlayer(String playerName) {
-        return players.get(playerName);
+    public Player getPlayer(String playerName) throws PlayerNotFoundException {
+        Player player = players.get(playerName);
+        if (player == null) {
+            throw new PlayerNotFoundException(playerName);
+        }
+        return player;
     }
 
 
@@ -60,15 +68,26 @@ public class GooseGame implements Game {
             CLOutputLogger.playerBounce(player.getName(), destination.getName());
         }
 
-        player.setCurrentSlot(destination);
-        handlePrank(player, destination);
+        setPlayerSlot(player, destination);
 
         return destination;
     }
 
+    public void setPlayerSlot(Player player, Slot destination) {
+        player.setCurrentSlot(destination);
+
+        // handle prank
+        players.values().stream()
+                .filter(p -> p.getCurrentSlot().getNumber() == player.getCurrentSlot().getNumber())
+                .filter(p -> !p.equals(player))
+                .findFirst()
+                .ifPresent(oldPlayer -> {switchPlayers(player, oldPlayer); System.out.println("switching");});
+
+    }
+
 
     @Override
-    public Slot movePlayer(String playerName) {
+    public Slot movePlayer(String playerName) throws InvalidDiceException, PlayerNotFoundException {
         int die1 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
         int die2 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
 
@@ -76,9 +95,23 @@ public class GooseGame implements Game {
     }
 
     @Override
-    public Slot movePlayer(String playerName, int die1, int die2) {
+    public Slot movePlayer(String playerName, String stringDie1, String stringDie2) throws NumberFormatException, InvalidDiceException, PlayerNotFoundException {
+        int die1 = Integer.parseInt(stringDie1);
+        int die2 = Integer.parseInt(stringDie2);
+        return movePlayer(playerName, die1, die2);
+    }
+
+    @Override
+    public Slot movePlayer(String playerName, int die1, int die2) throws PlayerNotFoundException, InvalidDiceException {
 
         Player player = getPlayer(playerName);
+
+        if (!isDieValid(die1)) {
+            throw new InvalidDiceException(""+die1);
+        }
+        if (!isDieValid(die2)) {
+            throw new InvalidDiceException(""+die2);
+        }
 
         CLOutputLogger.playerRoll(playerName, die1, die2);
 
@@ -95,7 +128,7 @@ public class GooseGame implements Game {
         }
         if (destination.getType() == SlotType.BRIDGE) {
             destination = board.getSlot(12);
-            player.setCurrentSlot(destination);
+            setPlayerSlot(player, destination);
             CLOutputLogger.playerJump(player.getName(), destination.getName());
         }
 
@@ -108,29 +141,13 @@ public class GooseGame implements Game {
     }
 
 
-    @Override
-    public Optional<Player> getOtherPlayerOnSlot(Player newPlayer, int slotNum) {
-        return players.values().stream()
-                .filter(player -> player.getCurrentSlot().getNumber() == slotNum)
-                .filter(player -> !player.equals(newPlayer))
-                .findFirst();
-    }
-
-    private void handlePrank(Player newPlayer, Slot destination) {
-        getOtherPlayerOnSlot(newPlayer, destination.getNumber())
-                .ifPresent(
-                        oldPlayer -> {
-                            switchPlayers(newPlayer, oldPlayer);
-                            CLOutputLogger.playerPrank(
-                                    oldPlayer.getName(),
-                                    newPlayer.getPreviousSlot().getName());
-                        }
-                );
-    }
-
     private void switchPlayers(Player newPlayer, Player oldPlayer) {
         oldPlayer.setCurrentSlot(newPlayer.getPreviousSlot());
-        newPlayer.setCurrentSlot(oldPlayer.getCurrentSlot());
+        CLOutputLogger.playerPrank(
+                oldPlayer.getName(),
+                newPlayer.getCurrentSlot().getName(),
+                oldPlayer.getCurrentSlot().getName());
+        CLOutputLogger.playerBounce("aaa", "bbb");
     }
 
     @Override

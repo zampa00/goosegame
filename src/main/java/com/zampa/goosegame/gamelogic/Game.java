@@ -1,5 +1,8 @@
 package com.zampa.goosegame.gamelogic;
 
+import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
+import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
+
 import java.util.Optional;
 
 public interface Game {
@@ -7,8 +10,9 @@ public interface Game {
     /**
      * Add the player to the current game, if not already present.
      * @param playerName The name of the player to add.
+     * @return true if the player is correctly added, false if already present
      */
-    public void addPlayer(String playerName);
+    public boolean addPlayer(String playerName);
 
     /**
      * Check if the specified player is in the game.
@@ -22,7 +26,7 @@ public interface Game {
      * @param playerName The name of the player to retrieve.
      * @return The object representing the player in the current game, or null if no player with this playerName
      */
-    public Player getPlayer(String playerName);
+    public Player getPlayer(String playerName) throws PlayerNotFoundException;
 
     /**
      * Gets the current game board.
@@ -35,7 +39,11 @@ public interface Game {
      * @param playerName The name of the player to move.
      * @return The slot the player lands on.
      */
-    public Slot movePlayer(String playerName);
+    public Slot movePlayer(String playerName) throws InvalidDiceException, PlayerNotFoundException;
+
+    Slot movePlayer(String playerName, String stringDie1, String stringDie2) throws IllegalArgumentException, InvalidDiceException, PlayerNotFoundException;
+
+    public Slot movePlayer(String playerName, int die1, int die2) throws IllegalArgumentException, PlayerNotFoundException, InvalidDiceException;
 
     /**
      * Move the player of the specified dice numbers. Does NOT handle special effects.
@@ -46,16 +54,7 @@ public interface Game {
      */
     public Slot movePlayerOf(Player player, int of);
 
-    Slot movePlayer(String playerName, int die1, int die2) throws IllegalArgumentException;
 
-
-    /**
-     * Returns the player on the specified slot.
-     * @param newPlayer The player who just arrived on this slot
-     * @param slotNum A number between 1 and 63
-     * @return An Optional containing the player on the specified slot, or nothing if empty.
-     */
-    public Optional<Player> getOtherPlayerOnSlot(Player newPlayer, int slotNum);
 
     /**
      * Check if any winning condition is met.

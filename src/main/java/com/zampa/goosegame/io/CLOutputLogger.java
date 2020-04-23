@@ -112,8 +112,9 @@ public final class CLOutputLogger {
     }
 
 
-    public static void playerPrank(String playerPranked, String returnsTo) {
-        buffer.append(playerPranks.replaceAll("$PLAYER", playerPranked)
+    public static void playerPrank(String playerPranked, String currentSlot, String returnsTo) {
+        buffer.append(playerPranks.replace("$PLAYER", playerPranked)
+                .replace("$DESTINATION", currentSlot)
                 .replace("$START", returnsTo));
     }
 
@@ -128,8 +129,8 @@ public final class CLOutputLogger {
     }
 
 
-    public static void invalidDie(int number) {
-        buffer.append(dieOutOfRange.replace("$NUMBER", Integer.toString(number)));
+    public static void invalidDie(String number) {
+        buffer.append(dieOutOfRange.replace("$NUMBER", number));
     }
 
 

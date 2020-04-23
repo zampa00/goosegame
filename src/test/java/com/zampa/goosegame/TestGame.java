@@ -1,26 +1,23 @@
 package com.zampa.goosegame;
 
 import com.zampa.goosegame.gamelogic.Game;
+import com.zampa.goosegame.gamelogic.Player;
 import com.zampa.goosegame.gamelogic.Slot;
+import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
+import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
 import com.zampa.goosegame.io.CLInput;
+import com.zampa.goosegame.io.CLOutputLogger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-
 public class TestGame {
 
     @Before
-    public void setUp() throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-
+    public void setUp() {
+        CLOutputLogger.init();
         Game gooseGame = new GooseGame();
-        CLInput cli = new CLInput(gooseGame);
+        new CLInput(gooseGame);
     }
 
     @Test
@@ -39,7 +36,7 @@ public class TestGame {
     }
 
     @Test
-    public void testMovePlayer() {
+    public void testMovePlayer() throws PlayerNotFoundException, InvalidDiceException {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
         gooseGame.addPlayer("Pluto");
@@ -55,12 +52,12 @@ public class TestGame {
     }
 
     @Test
-    public void testGameEnd() {
+    public void testGameEnd() throws PlayerNotFoundException, InvalidDiceException {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(60);
-        gooseGame.getPlayer("Pippo").get().setCurrentSlot(newSlot);
+        gooseGame.getPlayer("Pippo").setCurrentSlot(newSlot);
 
         gooseGame.movePlayer("Pippo", 1, 2);
 
@@ -68,19 +65,19 @@ public class TestGame {
     }
 
     @Test
-    public void testBounce() {
+    public void testBounce() throws PlayerNotFoundException, InvalidDiceException {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(60);
-        gooseGame.getPlayer("Pippo").get().setCurrentSlot(newSlot);
+        gooseGame.getPlayer("Pippo").setCurrentSlot(newSlot);
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 3, 2);
         Assert.assertEquals("Bounce failed", 61, newPippoSlot.getNumber());
     }
 
     @Test
-    public void testRollAndMove() {
+    public void testRollAndMove() throws PlayerNotFoundException, InvalidDiceException {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
@@ -89,19 +86,19 @@ public class TestGame {
     }
 
     @Test
-    public void testBridge() {
+    public void testBridge() throws PlayerNotFoundException, InvalidDiceException {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(4);
-        gooseGame.getPlayer("Pippo").get().setCurrentSlot(newSlot);
+        gooseGame.getPlayer("Pippo").setCurrentSlot(newSlot);
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 1, 1);
         Assert.assertEquals("The Bridge not working", 12, newPippoSlot.getNumber());
     }
 
     @Test
-    public void testGooseSingle() {
+    public void testGooseSingle() throws PlayerNotFoundException, InvalidDiceException {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
@@ -110,7 +107,7 @@ public class TestGame {
     }
 
     @Test
-    public void testGooseMultiple() {
+    public void testGooseMultiple() throws PlayerNotFoundException, InvalidDiceException {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
@@ -119,17 +116,17 @@ public class TestGame {
     }
 
     @Test
-    public void testPrank() {
+    public void testPrank() throws PlayerNotFoundException, InvalidDiceException {
         Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
         gooseGame.addPlayer("Pluto");
 
-        gooseGame.getPlayer("Pippo").get().setCurrentSlot(gooseGame.getBoard().getSlot(19));
-        gooseGame.getPlayer("Pippo").get().setCurrentSlot(gooseGame.getBoard().getSlot(4));
+        gooseGame.getPlayer("Pippo").setCurrentSlot(gooseGame.getBoard().getSlot(19));
+        gooseGame.getPlayer("Pluto").setCurrentSlot(gooseGame.getBoard().getSlot(4));
 
         gooseGame.movePlayer("Pluto", 2, 3);
         Assert.assertEquals("Prank not working",
                 14,
-                gooseGame.getPlayer("Pippo").get().getCurrentSlot().getNumber());
+                gooseGame.getPlayer("Pippo").getCurrentSlot().getNumber());
     }
 }
