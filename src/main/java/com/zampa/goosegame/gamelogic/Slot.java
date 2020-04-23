@@ -17,9 +17,8 @@ public class Slot {
                 this.name = "The Bridge"; break;
             case GOOSE:
                 this.name = number + ", The Goose"; break;
-            case BASE:
-            case FINAL:
-                this.name = "";
+            default:
+                this.name = Integer.toString(number);
         }
     }
 
@@ -33,5 +32,9 @@ public class Slot {
 
     public SlotType getType() {
         return type;
+    }
+
+    public boolean isSpecial() {
+        return type == SlotType.BRIDGE || type == SlotType.GOOSE;
     }
 }

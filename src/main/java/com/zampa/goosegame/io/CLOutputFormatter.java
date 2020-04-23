@@ -12,6 +12,16 @@ public final class CLOutputFormatter {
 	static String playerPranks = "On $DESTINATION there is $PLAYER, who returns to $START. ";
 	static String playerWins = "$PLAYER Wins!! ";
 
+	static String playerNotFound = "Player $PLAYER does not exists. ";
+	static String commandNotFound = "Unknown command: \"$COMMAND\". ";
+	static String invalidNumber = "$NUMBER is not a valid number. ";
+	static String dieOutOfRange = "$NUMBER is not a valid roll. ";
+
+	static String help =
+            "add <PlayerName> - adds <Playername> if not already in game.\n" +
+            "move <PlayerName> - rolls dice and move.\n" +
+            "move <PlayerName> <die>, <die> - move of the specified dice.";
+
 
     public static String listPlayers(String playerNames) {
         return listPlayers.replace("$LIST", playerNames);
@@ -50,7 +60,7 @@ public final class CLOutputFormatter {
 
 
     public static String playerBounce(String playerName, String to) {
-        return playerBounces.replaceAll("$PLAYER", playerName)
+        return playerBounces.replace("$PLAYER", playerName)
                 .replace("$DESTINATION", to);
     }
 
@@ -64,4 +74,31 @@ public final class CLOutputFormatter {
         return playerPranks.replaceAll("$PLAYER", playerPranked)
                 .replace("$START", returnsTo);
     }
+
+
+    public static String playerNotFound(String player) {
+        return playerNotFound.replace("$PLAYER", player);
+    }
+
+
+    public static String invalidNumber(String number) {
+        return invalidNumber.replace("$NUMBER", number);
+    }
+
+
+    public static String invalidDie(int number) {
+        return dieOutOfRange.replace("$NUMBER", Integer.toString(number));
+    }
+
+
+    public static String commandNotFound(String command) {
+        return commandNotFound.replace("$COMMAND", command)
+                + "\n" + help;
+    }
+
+
+    public static String help() {
+        return help;
+    }
+
 }
