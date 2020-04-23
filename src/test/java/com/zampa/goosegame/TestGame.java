@@ -3,8 +3,6 @@ package com.zampa.goosegame;
 import com.zampa.goosegame.gamelogic.Game;
 import com.zampa.goosegame.gamelogic.Slot;
 import com.zampa.goosegame.io.CLInput;
-import com.zampa.goosegame.io.CLOutput;
-import com.zampa.goosegame.io.IOutput;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,28 +14,25 @@ import java.io.OutputStreamWriter;
 
 public class TestGame {
 
-    IOutput clo;
-
     @Before
     public void setUp() throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        this.clo = new CLOutput(writer);
-        Game gooseGame = new GooseGame(clo);
-        CLInput cli = new CLInput(gooseGame, clo);
+        Game gooseGame = new GooseGame();
+        CLInput cli = new CLInput(gooseGame);
     }
 
     @Test
     public void testAddPlayer() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         boolean addPlayerResult = gooseGame.addPlayer("Pippo");
         Assert.assertTrue("Failed to add player", addPlayerResult);
     }
 
     @Test
     public void testAddPlayerTwice() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
         boolean addPlayerTwiceResult = gooseGame.addPlayer("Pippo");
         Assert.assertFalse("Player added twice", addPlayerTwiceResult);
@@ -45,7 +40,7 @@ public class TestGame {
 
     @Test
     public void testMovePlayer() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
         gooseGame.addPlayer("Pluto");
 
@@ -61,7 +56,7 @@ public class TestGame {
 
     @Test
     public void testGameEnd() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(60);
@@ -74,11 +69,11 @@ public class TestGame {
 
     @Test
     public void testBounce() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(60);
-        gooseGame.movePlayerTo("Pippo", newSlot);
+        gooseGame.getPlayer("Pippo").get().setCurrentSlot(newSlot);
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 3, 2);
         Assert.assertEquals("Bounce failed", 61, newPippoSlot.getNumber());
@@ -86,20 +81,20 @@ public class TestGame {
 
     @Test
     public void testRollAndMove() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
-        Slot newPippoSlot = gooseGame.rollPlayer("Pippo");
+        Slot newPippoSlot = gooseGame.movePlayer("Pippo");
         Assert.assertNotEquals("First Pippo's automatic movement failed", 0, newPippoSlot.getNumber());
     }
 
     @Test
     public void testBridge() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(4);
-        gooseGame.movePlayerTo("Pippo", newSlot);
+        gooseGame.getPlayer("Pippo").get().setCurrentSlot(newSlot);
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 1, 1);
         Assert.assertEquals("The Bridge not working", 12, newPippoSlot.getNumber());
@@ -107,7 +102,7 @@ public class TestGame {
 
     @Test
     public void testGooseSingle() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 2, 3);
@@ -116,7 +111,7 @@ public class TestGame {
 
     @Test
     public void testGooseMultiple() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 4, 5);
@@ -125,12 +120,12 @@ public class TestGame {
 
     @Test
     public void testPrank() {
-        Game gooseGame = new GooseGame(clo);
+        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
         gooseGame.addPlayer("Pluto");
 
-        gooseGame.movePlayerTo("Pippo", gooseGame.getBoard().getSlot(19));
-        gooseGame.movePlayerTo("Pluto", gooseGame.getBoard().getSlot(4));
+        gooseGame.getPlayer("Pippo").get().setCurrentSlot(gooseGame.getBoard().getSlot(19));
+        gooseGame.getPlayer("Pippo").get().setCurrentSlot(gooseGame.getBoard().getSlot(4));
 
         gooseGame.movePlayer("Pluto", 2, 3);
         Assert.assertEquals("Prank not working",

@@ -1,13 +1,10 @@
 package com.zampa.goosegame;
 
 import com.zampa.goosegame.gamelogic.*;
-import com.zampa.goosegame.io.CLOutput;
-import com.zampa.goosegame.io.CLOutputFormatter;
-import com.zampa.goosegame.io.IOutput;
+import com.zampa.goosegame.io.CLOutputLogger;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 public class GooseGame implements Game {
 
@@ -16,31 +13,27 @@ public class GooseGame implements Game {
     private boolean isGameOver;
     private final int MIN_DIE_VALUE = 1;
     private final int MAX_DIE_VALUE = 6;
-    private IOutput output;
 
 
-    public GooseGame(IOutput output) {
+    public GooseGame() {
         players = new HashMap<>();
         board = new Board();
         isGameOver = false;
-        this.output = output;
     }
 
     @Override
-    public boolean addPlayer(String playerName) {
+    public void addPlayer(String playerName) {
         Player newPlayer = new Player(playerName);
         newPlayer.setCurrentSlot(board.getSlot(0));
 
         if (!hasPlayer(playerName)) {
             players.put(playerName, newPlayer);
 
-            String playerList = players.keySet().stream().collect(Collectors.joining(", "));
-            output.append(CLOutputFormatter.listPlayers(playerList));
-            return true;
+            String playerList = String.join(", ", players.keySet());
+            CLOutputLogger.listPlayers(playerList);
         }
         else {
-            output.append(CLOutputFormatter.playerExists(playerName));
-            return false;
+            CLOutputLogger.playerExists(playerName);
         }
     }
 
@@ -50,17 +43,11 @@ public class GooseGame implements Game {
     }
 
     @Override
-    public Optional<Player> getPlayer(String playerName) {
-        return Optional.ofNullable(players.get(playerName));
+    public Player getPlayer(String playerName) {
+        return players.get(playerName);
     }
 
-    @Override
-    public Slot rollPlayer(String playerName) {
-        int die1 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
-        int die2 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
 
-        return movePlayer(playerName, die1, die2);
-    }
 
     @Override
     public Slot movePlayerOf(Player player, int of) {
@@ -69,53 +56,54 @@ public class GooseGame implements Game {
         Slot destination = board.advanceFromSlot(currentSlot, of);
 
         if (board.willBounce(currentSlot, of)) {
-            output.append(CLOutputFormatter.playerMove(player.getName(), currentSlot.getName(), destination.getName()));
-            output.append(CLOutputFormatter.playerBounce(player.getName(), destination.getName()));
+            CLOutputLogger.playerMove(player.getName(), currentSlot.getName(), destination.getName());
+            CLOutputLogger.playerBounce(player.getName(), destination.getName());
         }
-//        else {
-//            output.append(CLOutputFormatter.playerMove(player.getName(), currentSlot.getName(), destination.getName()));
-//        }
+
         player.setCurrentSlot(destination);
         handlePrank(player, destination);
 
         return destination;
     }
 
+
+    @Override
+    public Slot movePlayer(String playerName) {
+        int die1 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
+        int die2 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
+
+        return movePlayer(playerName, die1, die2);
+    }
+
     @Override
     public Slot movePlayer(String playerName, int die1, int die2) {
 
-        Player player = getPlayer(playerName).get();
+        Player player = getPlayer(playerName);
 
-        output.append(CLOutputFormatter.playerRoll(playerName, die1, die2));
+        CLOutputLogger.playerRoll(playerName, die1, die2);
 
         // muovo in avanti eventualmente rimbalzando, mi restituisce la destinazione
         // controllo se sono arrivato su uno slot con un giocatore, e se sì lo sostituisco
         Slot destination = movePlayerOf(player, die1+die2);
 
-        output.append(CLOutputFormatter.playerMove(player.getName(), player.getPreviousSlot().getName(), destination.getName()));
+        CLOutputLogger.playerMove(player.getName(), player.getPreviousSlot().getName(), destination.getName());
 
         // controllo se devo muovere di nuovo
         while (destination.getType() == SlotType.GOOSE) {
             destination = movePlayerOf(player, die1+die2);
-            output.append(CLOutputFormatter.playerMoveAgain(player.getName(), destination.getName()));
+            CLOutputLogger.playerMoveAgain(player.getName(), destination.getName());
         }
         if (destination.getType() == SlotType.BRIDGE) {
-            destination = movePlayerTo(playerName, board.getSlot(12));
-            output.append(CLOutputFormatter.playerJump(player.getName(), destination.getName()));
+            destination = board.getSlot(12);
+            player.setCurrentSlot(destination);
+            CLOutputLogger.playerJump(player.getName(), destination.getName());
         }
 
         if (destination.getType() == SlotType.FINAL) {
             this.isGameOver = true;
-            output.append(CLOutputFormatter.playerWin(player.getName()));
+            CLOutputLogger.playerWin(player.getName());
         }
 
-        return destination;
-    }
-
-    @Override
-    public Slot movePlayerTo(String playerName, Slot destination) {
-        Player player = getPlayer(playerName).get();
-        player.setCurrentSlot(destination);
         return destination;
     }
 
@@ -133,9 +121,9 @@ public class GooseGame implements Game {
                 .ifPresent(
                         oldPlayer -> {
                             switchPlayers(newPlayer, oldPlayer);
-                            output.append(CLOutputFormatter.playerPrank(
+                            CLOutputLogger.playerPrank(
                                     oldPlayer.getName(),
-                                    newPlayer.getPreviousSlot().getName()));
+                                    newPlayer.getPreviousSlot().getName());
                         }
                 );
     }

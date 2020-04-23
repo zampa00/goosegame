@@ -8,11 +8,9 @@ import java.util.stream.Collectors;
 public class CLInput {
 
     Game game;
-    private IOutput output;
 
-    public CLInput(Game game, IOutput output) {
+    public CLInput(Game game) {
         this.game = game;
-        this.output = output;
     }
 
     public void parse(String input) {
@@ -25,11 +23,11 @@ public class CLInput {
                 case "move":
                     if(validateMove(input)) parseMove(i); break;
                 default:
-                    output.append(CLOutputFormatter.commandNotFound(input));
+                    CLOutputLogger.commandNotFound(input);
             }
         }
         catch (IllegalArgumentException e) {
-            output.append(CLOutputFormatter.commandNotFound(input));
+            CLOutputLogger.commandNotFound(input);
         }
 
 
@@ -39,20 +37,20 @@ public class CLInput {
         String[] input = originalCommand.split("[\\s]+");
 
         if (input.length != 2 && input.length != 4) {
-            output.append(CLOutputFormatter.commandNotFound(originalCommand));
+            CLOutputLogger.commandNotFound(originalCommand);
             return false;
         }
 
         // input[1] must be a valid player
         if (!game.hasPlayer(input[1])) {
-            output.append(CLOutputFormatter.playerNotFound(input[1]));
+            CLOutputLogger.playerNotFound(input[1]);
             return false;
         }
 
         if (input.length == 4) {
             // input[2] must be a valid number followed by a comma
             if (!input[2].endsWith(",")) {
-                output.append(CLOutputFormatter.commandNotFound(originalCommand));
+                CLOutputLogger.commandNotFound(originalCommand);
                 return false;
             }
 
@@ -61,11 +59,11 @@ public class CLInput {
                 try {
                     int die = Integer.parseInt(input[i].replace(",", ""));
                     if (!game.isDieValid(die)) {
-                        output.append(CLOutputFormatter.invalidDie(die));
+                        CLOutputLogger.invalidDie(die);
                         return false;
                     }
                 } catch (NumberFormatException e) {
-                    output.append(CLOutputFormatter.invalidNumber(input[i]));
+                    CLOutputLogger.invalidNumber(input[i]);
                     return false;
                 }
             }
@@ -78,7 +76,7 @@ public class CLInput {
 
     private void parseAdd(String[] addInput) {
         if (addInput.length != 2) {
-            output.append(CLOutputFormatter.commandNotFound(addInput[0]));
+            CLOutputLogger.commandNotFound(addInput[0]);
             return;
         }
         game.addPlayer(addInput[1]);
@@ -88,13 +86,13 @@ public class CLInput {
 
         switch (moveInput.length) {
             case 2:
-                game.rollPlayer(moveInput[1]); break;
+                game.movePlayer(moveInput[1]); break;
             case 4:
                 game.movePlayer(moveInput[1],
                     Integer.parseInt(moveInput[2]),
                     Integer.parseInt(moveInput[3])); break;
             default:
-                output.append(CLOutputFormatter.commandNotFound(Arrays.stream(moveInput).collect(Collectors.joining(" "))));
+                CLOutputLogger.commandNotFound(Arrays.stream(moveInput).collect(Collectors.joining(" ")));
         }
     }
 
