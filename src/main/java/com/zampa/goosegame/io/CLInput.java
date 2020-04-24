@@ -16,20 +16,20 @@ public class CLInput {
         this.game = game;
     }
 
-    public void parse(String input) {
+    public boolean parse(String input) {
         String[] i = input.split("[\\s,]+");
         Command command = new Command((input));
 
         if (command.getName().isEmpty()) {
-            return;
+            return false;
         }
 
         try {
             switch(command.getName()) {
                 case "add":
-                    handleAdd(input, command.getParameters()); break;
+                    return handleAdd(input, command.getParameters());
                 case "move":
-                    handleMove(input, command.getParameters()); break;
+                    return handleMove(input, command.getParameters());
                 default:
                     CLOutputLogger.commandNotFound(input);
             }
@@ -38,27 +38,28 @@ public class CLInput {
             e.printStackTrace();
             CLOutputLogger.commandNotFound(input);
         }
-
+        return false;
     }
 
 
-    private void handleAdd(String originalCommand, List<String> parameters) {
+    private boolean handleAdd(String originalCommand, List<String> parameters) {
         switch (parameters.size()) {
             case 1:
-                game.addPlayer(parameters.get(0)); break;
+                return game.addPlayer(parameters.get(0));
             default:
                 CLOutputLogger.commandNotFound(originalCommand);
         }
+        return false;
     }
 
-    private void handleMove(String originalCommand, List<String> parameters) {
+    private boolean handleMove(String originalCommand, List<String> parameters) {
 
         try {
             switch (parameters.size()) {
                 case 1:
-                    game.movePlayer(parameters.get(0)); break;
+                    return game.movePlayer(parameters.get(0)) != null;
                 case 3:
-                    game.movePlayer(parameters.get(0), parameters.get(1), parameters.get(2)); break;
+                    return game.movePlayer(parameters.get(0), parameters.get(1), parameters.get(2)) != null;
                 default:
                     CLOutputLogger.commandNotFound(originalCommand);
             }
@@ -72,7 +73,7 @@ public class CLInput {
         catch (NumberFormatException e) {
             CLOutputLogger.invalidNumber(e.getMessage());
         }
-
+        return false;
     }
 
 }
