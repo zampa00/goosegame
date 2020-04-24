@@ -5,7 +5,6 @@ import com.zampa.goosegame.gamelogic.GooseGame;
 import com.zampa.goosegame.gamelogic.Slot;
 import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
 import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
-import com.zampa.goosegame.io.CLInput;
 import com.zampa.goosegame.io.CLOutputLogger;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,23 +12,22 @@ import org.junit.Test;
 
 public class TestGame {
 
+    Game gooseGame;
+
     @Before
     public void setUp() {
         CLOutputLogger.init();
-        Game gooseGame = new GooseGame();
-        new CLInput(gooseGame);
+        this.gooseGame = new GooseGame();
     }
 
     @Test
     public void testAddPlayer() {
-        Game gooseGame = new GooseGame();
         boolean addPlayerResult = gooseGame.addPlayer("Pippo");
         Assert.assertTrue("Failed to add player", addPlayerResult);
     }
 
     @Test
     public void testAddPlayerTwice() {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
         boolean addPlayerTwiceResult = gooseGame.addPlayer("Pippo");
         Assert.assertFalse("Player added twice", addPlayerTwiceResult);
@@ -37,7 +35,6 @@ public class TestGame {
 
     @Test
     public void testMovePlayer() throws PlayerNotFoundException, InvalidDiceException {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
         gooseGame.addPlayer("Pluto");
 
@@ -53,7 +50,6 @@ public class TestGame {
 
     @Test
     public void testGameEnd() throws PlayerNotFoundException, InvalidDiceException {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(60);
@@ -66,7 +62,6 @@ public class TestGame {
 
     @Test
     public void testBounce() throws PlayerNotFoundException, InvalidDiceException {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(60);
@@ -78,7 +73,6 @@ public class TestGame {
 
     @Test
     public void testRollAndMove() throws PlayerNotFoundException, InvalidDiceException {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo");
@@ -87,7 +81,6 @@ public class TestGame {
 
     @Test
     public void testBridge() throws PlayerNotFoundException, InvalidDiceException {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newSlot = gooseGame.getBoard().getSlot(4);
@@ -99,7 +92,6 @@ public class TestGame {
 
     @Test
     public void testGooseSingle() throws PlayerNotFoundException, InvalidDiceException {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 2, 3);
@@ -108,7 +100,6 @@ public class TestGame {
 
     @Test
     public void testGooseMultiple() throws PlayerNotFoundException, InvalidDiceException {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
 
         Slot newPippoSlot = gooseGame.movePlayer("Pippo", 4, 5);
@@ -117,7 +108,6 @@ public class TestGame {
 
     @Test
     public void testPrank() throws PlayerNotFoundException, InvalidDiceException {
-        Game gooseGame = new GooseGame();
         gooseGame.addPlayer("Pippo");
         gooseGame.addPlayer("Pluto");
 

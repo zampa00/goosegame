@@ -9,24 +9,24 @@ public final class CLOutputLogger {
     static String listPlayers = "players: $LIST. ";
     static String playersExists = "$PLAYER: already existing player. ";
     static String playerRolls = "$PLAYER rolls $DIE1, $DIE2. ";
-	static String playerMoves = "$PLAYER moves from $START to $DESTINATION. ";
-	static String playerJumps = "$PLAYER jumps to $DESTINATION. ";
-	static String playerMovesAgain = "$PLAYER moves again and goes to $DESTINATION. ";
+    static String playerMoves = "$PLAYER moves from $START to $DESTINATION. ";
+    static String playerJumps = "$PLAYER jumps to $DESTINATION. ";
+    static String playerMovesAgain = "$PLAYER moves again and goes to $DESTINATION. ";
     static String playerBounces = "$PLAYER moves from $START to 63. $PLAYER bounces! $PLAYER returns to $DESTINATION. ";
-	static String playerPranks = "On $DESTINATION there is $PLAYER, who returns to $START. ";
-	static String playerWins = "$PLAYER Wins!! ";
+    static String playerPranks = "On $DESTINATION there is $PLAYER, who returns to $START. ";
+    static String playerWins = "$PLAYER Wins!! ";
 
-	static String playerNotFound = "Player $PLAYER does not exists. ";
-	static String commandNotFound = "Unknown command: \"$COMMAND\". ";
-	static String invalidNumber = "$NUMBER is not a valid number. ";
-	static String dieOutOfRange = "$NUMBER is not a valid roll. ";
+    static String playerNotFound = "Player $PLAYER does not exists. ";
+    static String commandNotFound = "Unknown command: \"$COMMAND\". ";
+    static String invalidNumber = "$NUMBER is not a valid number. ";
+    static String dieOutOfRange = "$NUMBER is not a valid roll. ";
 
-	static String help = "Commands:\n" +
+    static String help = "Commands:\n" +
             "add <PlayerName> - adds <Playername> if not already in game.\n" +
             "move <PlayerName> - rolls dice and move.\n" +
             "move <PlayerName> <die>, <die> - move of the specified dice.";
-	static String gameStart = "Welcome to Goose Game! ";
-	static String gameEnded = "Game ended. ";
+    static String gameStart = "Welcome to Goose Game! ";
+    static String gameEnded = "Game ended. ";
 
     private static BufferedWriter writer;
     private static StringBuffer buffer;

@@ -4,9 +4,7 @@ import com.zampa.goosegame.gamelogic.Game;
 import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
 import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CLInput {
 

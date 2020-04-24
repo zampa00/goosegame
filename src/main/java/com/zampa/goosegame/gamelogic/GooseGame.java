@@ -1,11 +1,11 @@
 package com.zampa.goosegame.gamelogic;
 
-import com.zampa.goosegame.gamelogic.*;
 import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
 import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
 import com.zampa.goosegame.io.CLOutputLogger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GooseGame implements Game {
