@@ -56,23 +56,6 @@ public class GooseGame implements Game {
     }
 
 
-
-    @Override
-    public Slot movePlayerOf(Player player, int of) {
-
-        Slot currentSlot = player.getCurrentSlot();
-        Slot destination = board.advanceFromSlot(currentSlot, of);
-
-        if (board.willBounce(currentSlot, of)) {
-            CLOutputLogger.playerMove(player.getName(), currentSlot.getName(), destination.getName());
-            CLOutputLogger.playerBounce(player.getName(), destination.getName());
-        }
-
-        setPlayerSlot(player, destination);
-
-        return destination;
-    }
-
     public void setPlayerSlot(Player player, Slot destination) {
         player.setCurrentSlot(destination);
 
@@ -80,9 +63,7 @@ public class GooseGame implements Game {
         players.values().stream()
                 .filter(p -> p.getCurrentSlot().getNumber() == player.getCurrentSlot().getNumber())
                 .filter(p -> !p.equals(player))
-                .findFirst()
-                .ifPresent(oldPlayer -> {switchPlayers(player, oldPlayer); System.out.println("switching");});
-
+                .forEach(oldPlayer -> switchPlayers(player, oldPlayer));
     }
 
 
@@ -104,6 +85,7 @@ public class GooseGame implements Game {
     @Override
     public Slot movePlayer(String playerName, int die1, int die2) throws PlayerNotFoundException, InvalidDiceException {
 
+        // Check arguments
         Player player = getPlayer(playerName);
 
         if (!isDieValid(die1)) {
@@ -115,21 +97,30 @@ public class GooseGame implements Game {
 
         CLOutputLogger.playerRoll(playerName, die1, die2);
 
-        // muovo in avanti eventualmente rimbalzando, mi restituisce la destinazione
-        // controllo se sono arrivato su uno slot con un giocatore, e se sì lo sostituisco
-        Slot destination = movePlayerOf(player, die1+die2);
+        // get the destination from the roll
+        Slot destination = board.advanceFromSlot(player.getCurrentSlot(), die1+die2);
 
-        CLOutputLogger.playerMove(player.getName(), player.getPreviousSlot().getName(), destination.getName());
+        // message is different if bouncing
+        if (board.willBounce(player.getCurrentSlot(), die1+die2)) {
+            CLOutputLogger.playerBounce(player.getName(), player.getCurrentSlot().getName(), destination.getName());
+        }
+        else {
+            CLOutputLogger.playerMove(player.getName(), player.getCurrentSlot().getName(), destination.getName());
+        }
 
-        // controllo se devo muovere di nuovo
+        // advance the player, pranking if other players are on that slot
+        setPlayerSlot(player, destination);
+
+        // check if the destination is a special slot, and handle it
         while (destination.getType() == SlotType.GOOSE) {
-            destination = movePlayerOf(player, die1+die2);
+            destination = board.advanceFromSlot(player.getCurrentSlot(), die1+die2);
+            setPlayerSlot(player, destination); // advance the player, pranking if other players are on that slot
             CLOutputLogger.playerMoveAgain(player.getName(), destination.getName());
         }
         if (destination.getType() == SlotType.BRIDGE) {
             destination = board.getSlot(12);
-            setPlayerSlot(player, destination);
             CLOutputLogger.playerJump(player.getName(), destination.getName());
+            setPlayerSlot(player, destination); // advance the player, pranking if other players are on that slot
         }
 
         if (destination.getType() == SlotType.FINAL) {
@@ -147,7 +138,6 @@ public class GooseGame implements Game {
                 oldPlayer.getName(),
                 newPlayer.getCurrentSlot().getName(),
                 oldPlayer.getCurrentSlot().getName());
-        CLOutputLogger.playerBounce("aaa", "bbb");
     }
 
     @Override
@@ -155,6 +145,7 @@ public class GooseGame implements Game {
         return this.isGameOver;
     }
 
+    @Override
     public Board getBoard() {
         return board;
     }

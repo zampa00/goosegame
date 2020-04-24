@@ -10,23 +10,13 @@ import java.io.*;
 
 public class Main {
 
-    public static void  main(String[] args) throws PlayerNotFoundException, InvalidDiceException {
+    public static void  main(String[] args) {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         CLOutputLogger.init();
         Game gooseGame = new GooseGame();
         CLInput cli = new CLInput(gooseGame);
-
-        gooseGame.addPlayer("Pippo");
-        gooseGame.addPlayer("Pluto");
-
-        gooseGame.getPlayer("Pippo").setCurrentSlot(gooseGame.getBoard().getSlot(19));
-        gooseGame.getPlayer("Pluto").setCurrentSlot(gooseGame.getBoard().getSlot(4));
-
-        gooseGame.movePlayer("Pluto", 2, 3);
-
-        System.out.println("Ho mosso tutto, ora Pippo si trova in "+gooseGame.getPlayer("Pippo").getCurrentSlot().getNumber());
 
         try {
             while (!gooseGame.isGameOver()) {
@@ -35,6 +25,9 @@ public class Main {
                 CLOutputLogger.printOutput();
             }
             reader.close();
+
+            CLOutputLogger.gameEnd();
+            CLOutputLogger.printOutput();
             CLOutputLogger.close();
         } catch (IOException e) {
             e.printStackTrace();

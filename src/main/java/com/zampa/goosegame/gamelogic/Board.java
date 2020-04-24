@@ -29,8 +29,8 @@ public class Board {
 
     /**
      * Returns the corresponding slot.
-     * @param slotNum a number between 1 and 63
-     * @return the corresponding slot
+     * @param slotNum A number between 1 and 63.
+     * @return The corresponding slot.
      * @throws IndexOutOfBoundsException if slotNum<1 or slotNum>63
      */
     public Slot getSlot(int slotNum) throws IndexOutOfBoundsException {
@@ -38,12 +38,12 @@ public class Board {
     }
 
     /**
-     * Return the slot
-     * @param from
-     * @param by
-     * @return
+     * Return the correct slot, handling the eventual bounce.
+     * @param from The starting slot.
+     * @param by The number of slot to advance.
+     * @return The final slot after handling the bounce.
      */
-    public Slot advanceFromSlot(Slot from, int by) throws IndexOutOfBoundsException {
+    public Slot advanceFromSlot(Slot from, int by) {
         if (willBounce(from, by)) {
             int overshoot = from.getNumber() + by - NUMBER_OF_SLOTS + 1; // 60 + 5 - 64 + 1 = 2
             return slots[NUMBER_OF_SLOTS - overshoot - 1]; // 64 - 2 - 1 = 61

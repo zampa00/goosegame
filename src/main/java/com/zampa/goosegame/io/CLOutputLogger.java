@@ -12,7 +12,7 @@ public final class CLOutputLogger {
 	static String playerMoves = "$PLAYER moves from $START to $DESTINATION. ";
 	static String playerJumps = "$PLAYER jumps to $DESTINATION. ";
 	static String playerMovesAgain = "$PLAYER moves again and goes to $DESTINATION. ";
-    static String playerBounces = "$PLAYER bounces! $PLAYER returns to $DESTINATION. ";
+    static String playerBounces = "$PLAYER moves from $START to 63. $PLAYER bounces! $PLAYER returns to $DESTINATION. ";
 	static String playerPranks = "On $DESTINATION there is $PLAYER, who returns to $START. ";
 	static String playerWins = "$PLAYER Wins!! ";
 
@@ -25,6 +25,7 @@ public final class CLOutputLogger {
             "add <PlayerName> - adds <Playername> if not already in game.\n" +
             "move <PlayerName> - rolls dice and move.\n" +
             "move <PlayerName> <die>, <die> - move of the specified dice.";
+	static String gameEnded = "Game ended. ";
 
     private static BufferedWriter writer;
     private static StringBuffer buffer;
@@ -101,8 +102,9 @@ public final class CLOutputLogger {
     }
 
 
-    public static void playerBounce(String playerName, String to) {
+    public static void playerBounce(String playerName, String from, String to) {
         buffer.append(playerBounces.replace("$PLAYER", playerName)
+                .replace("$START", from)
                 .replace("$DESTINATION", to));
     }
 
@@ -139,6 +141,9 @@ public final class CLOutputLogger {
                 + "\n" + help);
     }
 
+    public static void gameEnd() {
+        buffer.append(gameEnded);
+    }
 
     public static void help() {
         buffer.append(help);

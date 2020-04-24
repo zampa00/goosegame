@@ -18,13 +18,16 @@ public class CLInput {
 
     public void parse(String input) {
         String[] i = input.split("[\\s,]+");
-        System.out.println(input);
         Command command = new Command((input));
+
+        if (command.getName().isEmpty()) {
+            return;
+        }
 
         try {
             switch(command.getName()) {
                 case "add":
-                    parseAdd(i); break;
+                    handleAdd(input, command.getParameters()); break;
                 case "move":
                     handleMove(input, command.getParameters()); break;
                 default:
@@ -36,6 +39,16 @@ public class CLInput {
             CLOutputLogger.commandNotFound(input);
         }
 
+    }
+
+
+    private void handleAdd(String originalCommand, List<String> parameters) {
+        switch (parameters.size()) {
+            case 1:
+                game.addPlayer(parameters.get(0)); break;
+            default:
+                CLOutputLogger.commandNotFound(originalCommand);
+        }
     }
 
     private void handleMove(String originalCommand, List<String> parameters) {
@@ -61,18 +74,5 @@ public class CLInput {
         }
 
     }
-
-
-
-    private void parseAdd(String[] addInput) {
-        if (addInput.length != 2) {
-            CLOutputLogger.commandNotFound(addInput[0]);
-            return;
-        }
-        game.addPlayer(addInput[1]);
-    }
-
-
-
 
 }
