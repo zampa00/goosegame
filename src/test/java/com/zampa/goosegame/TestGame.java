@@ -1,7 +1,7 @@
 package com.zampa.goosegame;
 
 import com.zampa.goosegame.gamelogic.Game;
-import com.zampa.goosegame.gamelogic.Player;
+import com.zampa.goosegame.gamelogic.GooseGame;
 import com.zampa.goosegame.gamelogic.Slot;
 import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
 import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;

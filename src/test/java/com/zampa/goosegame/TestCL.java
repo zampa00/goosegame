@@ -1,6 +1,7 @@
 package com.zampa.goosegame;
 
 import com.zampa.goosegame.gamelogic.Game;
+import com.zampa.goosegame.gamelogic.GooseGame;
 import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
 import com.zampa.goosegame.io.CLInput;
 import com.zampa.goosegame.io.CLOutputLogger;

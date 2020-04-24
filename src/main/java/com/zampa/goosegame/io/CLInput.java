@@ -30,6 +30,8 @@ public class CLInput {
                     return handleAdd(input, command.getParameters());
                 case "move":
                     return handleMove(input, command.getParameters());
+                case "exit":
+                    return handleExit(input, command.getParameters());
                 default:
                     CLOutputLogger.commandNotFound(input);
             }
@@ -72,6 +74,16 @@ public class CLInput {
         }
         catch (NumberFormatException e) {
             CLOutputLogger.invalidNumber(e.getMessage());
+        }
+        return false;
+    }
+
+    private boolean handleExit(String originalCommand, List<String> parameters) {
+        switch (parameters.size()) {
+            case 0:
+                game.stopGame(); return true;
+            default:
+                CLOutputLogger.commandNotFound(originalCommand);
         }
         return false;
     }

@@ -1,4 +1,4 @@
-package com.zampa.goosegame;
+package com.zampa.goosegame.gamelogic;
 
 import com.zampa.goosegame.gamelogic.*;
 import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
@@ -61,7 +61,7 @@ public class GooseGame implements Game {
 
         // handle prank
         players.values().stream()
-                .filter(p -> p.getCurrentSlot().getNumber() == player.getCurrentSlot().getNumber())
+                .filter(p -> p.getCurrentSlot().equals(player.getCurrentSlot()))
                 .filter(p -> !p.equals(player))
                 .forEach(oldPlayer -> switchPlayers(player, oldPlayer));
     }
@@ -143,6 +143,11 @@ public class GooseGame implements Game {
     @Override
     public boolean isGameOver() {
         return this.isGameOver;
+    }
+
+    @Override
+    public void stopGame() {
+        this.isGameOver = true;
     }
 
     @Override

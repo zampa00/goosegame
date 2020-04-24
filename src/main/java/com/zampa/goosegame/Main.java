@@ -1,8 +1,7 @@
 package com.zampa.goosegame;
 
 import com.zampa.goosegame.gamelogic.Game;
-import com.zampa.goosegame.gamelogic.exception.InvalidDiceException;
-import com.zampa.goosegame.gamelogic.exception.PlayerNotFoundException;
+import com.zampa.goosegame.gamelogic.GooseGame;
 import com.zampa.goosegame.io.CLInput;
 import com.zampa.goosegame.io.CLOutputLogger;
 
@@ -19,6 +18,9 @@ public class Main {
         CLInput cli = new CLInput(gooseGame);
 
         try {
+            CLOutputLogger.welcome();
+            CLOutputLogger.printOutput();
+
             while (!gooseGame.isGameOver()) {
                 String input = reader.readLine();
                 cli.parse(input);
@@ -32,6 +34,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
     }
 

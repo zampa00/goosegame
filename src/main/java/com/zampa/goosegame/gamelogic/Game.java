@@ -75,11 +75,16 @@ public interface Game {
      * Check if any winning condition is met.
      * @return true if the game is over, false if ongoing.
      */
-    public boolean isGameOver();
+    boolean isGameOver();
+
+    /**
+     * Immediately interrupt the game and exit.
+     */
+    void stopGame();
 
     /**
      * Check if the input number is in a valid range.
      */
-    public boolean isDieValid(int die);
+    boolean isDieValid(int die);
 
 }

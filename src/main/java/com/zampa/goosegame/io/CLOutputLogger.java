@@ -21,10 +21,11 @@ public final class CLOutputLogger {
 	static String invalidNumber = "$NUMBER is not a valid number. ";
 	static String dieOutOfRange = "$NUMBER is not a valid roll. ";
 
-	static String help =
+	static String help = "Commands:\n" +
             "add <PlayerName> - adds <Playername> if not already in game.\n" +
             "move <PlayerName> - rolls dice and move.\n" +
             "move <PlayerName> <die>, <die> - move of the specified dice.";
+	static String gameStart = "Welcome to Goose Game! ";
 	static String gameEnded = "Game ended. ";
 
     private static BufferedWriter writer;
@@ -34,6 +35,11 @@ public final class CLOutputLogger {
     public static void init() {
         writer = new BufferedWriter(new OutputStreamWriter(System.out));
         buffer = new StringBuffer();
+    }
+
+    public static void welcome() {
+        buffer.append(gameStart);
+        buffer.append(help);
     }
 
     public void append(String info) {
