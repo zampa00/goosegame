@@ -69,8 +69,8 @@ public class GooseGame implements Game {
 
     @Override
     public Slot movePlayer(String playerName) throws InvalidDiceException, PlayerNotFoundException {
-        int die1 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
-        int die2 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE+1, MAX_DIE_VALUE+1);
+        int die1 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE, MAX_DIE_VALUE+1);
+        int die2 = ThreadLocalRandom.current().nextInt(MIN_DIE_VALUE, MAX_DIE_VALUE+1);
 
         return movePlayer(playerName, die1, die2);
     }
